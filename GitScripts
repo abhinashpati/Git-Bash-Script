@@ -1,0 +1,132 @@
+CleanRepo () {
+	SwitchMain
+	if isInsideProjectFolder; then
+		REMOTE="origin" && MASTER="main"
+		git branch -r |  grep "^  ${REMOTE}/" | sed "s|^  ${REMOTE}/|:|" | grep -v 	"^:HEAD" | grep -v "^:${MASTER}$" | xargs git push ${REMOTE}
+		git branch | grep -v "master" | xargs git branch -D
+	
+        else
+            Project
+	    CleanRepo
+        fi
+
+	
+}
+
+project () {
+	cd ~/Documents/Devworkspace/delivery-hero-app/
+}
+
+Project () {
+	cd ~/Documents/Devworkspace/delivery-hero-app/
+}
+
+cls () {
+	clear
+}
+
+home () {
+	cd ~/
+}
+
+Home () {
+	cd ~/
+}
+
+CreateBranch () {
+	if isInsideProjectFolder; then
+		git checkout -b $1
+	 else
+            Project
+	    CreateBranch
+        fi
+	
+}
+
+SwitchMain () {
+	if isInsideProjectFolder; then
+		git checkout main
+	else
+            Project
+	    SwitchMain
+        fi
+}
+
+PushToBranch () {
+	if isInsideProjectFolder; then
+		git push origin --set-upstream origin $1
+	else
+            Project
+	    PushToBranch
+        fi
+	
+}
+
+SyncWithMain () {
+	if isInsideProjectFolder; then
+        	if git remote -v | grep -q 'upstream'; then
+            		echo "upstream exist";
+        	else
+            		echo "Please enter the upstream git url:";
+            		read url;
+            		git remote add upstream "$url"
+        	fi
+
+        	git remote -v
+        	git fetch upstream
+        	git pull upstream main
+        	git checkout main
+        	git rebase upstream/main
+	else
+		Project
+		SyncWithMain
+	fi
+    }
+
+Rebase () {
+	if isInsideProjectFolder; then
+        	git fetch upstream
+	        git rebase upstream/master
+	        git push -f
+	else
+		Project
+		Rebase
+	fi
+}
+
+Stash () {
+	if isInsideProjectFolder; then
+		git stash
+	else
+		Project
+		Stash
+	fi
+}
+
+UnStash () {
+	if isInsideProjectFolder; then
+		git stash pop
+	else
+		Project
+		UnStash
+	fi
+}
+
+isInsideProjectFolder () {
+	if pwd | grep -E '(?:Users\/abhinash\.pati\/Documents\/Devworkspace\/delivery-hero-app)'; then
+		true
+		return
+	else
+		return
+	fi
+}
+
+
+Testing () {
+	if isInsideProjectFolder; then
+		echo "With Functionalists"
+	else
+		Project
+		Testing
+	fi
+}
